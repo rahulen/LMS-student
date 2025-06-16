@@ -4,15 +4,14 @@ import ProviderDetailsContent from '@/components/provider-details-content';
 import PageContainer from '@/components/layout/page-container';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
+import type { Params } from '@/types/route-params';
 
-// Helper function to fetch provider
 async function getProvider(id: string): Promise<Provider | undefined> {
   return mockProviders.find((p) => p.id === id);
 }
 
-// Generate metadata for SEO
 export async function generateMetadata(
-  { params }: { params: { id: string } }
+  { params }: Params<'id'>
 ): Promise<Metadata> {
   const provider = await getProvider(params.id);
   if (!provider) {
@@ -26,16 +25,13 @@ export async function generateMetadata(
   };
 }
 
-// Page component
 export default async function ProviderDetailsPage(
-  { params }: { params: { id: string } }
+  { params }: Params<'id'>
 ) {
   const provider = await getProvider(params.id);
-
   if (!provider) {
     notFound();
   }
-
   return (
     <PageContainer>
       <ProviderDetailsContent provider={provider} />
@@ -43,9 +39,6 @@ export default async function ProviderDetailsPage(
   );
 }
 
-// Generate static paths (for SSG)
 export async function generateStaticParams() {
-  return mockProviders.map((provider) => ({
-    id: provider.id,
-  }));
+  return mockProviders.map((provider) => ({ id: provider.id }));
 }
