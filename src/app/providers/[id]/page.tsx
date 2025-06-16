@@ -3,17 +3,17 @@ import type { Provider } from '@/data/types';
 import ProviderDetailsContent from '@/components/provider-details-content';
 import PageContainer from '@/components/layout/page-container';
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 
-interface ProviderDetailsPageProps {
-  params: { id: string };
-}
-
+// Helper function to fetch provider
 async function getProvider(id: string): Promise<Provider | undefined> {
-  // Simulate API call
   return mockProviders.find((p) => p.id === id);
 }
 
-export async function generateMetadata({ params }: ProviderDetailsPageProps) {
+// Generate metadata for SEO
+export async function generateMetadata(
+  { params }: { params: { id: string } }
+): Promise<Metadata> {
   const provider = await getProvider(params.id);
   if (!provider) {
     return {
@@ -26,7 +26,10 @@ export async function generateMetadata({ params }: ProviderDetailsPageProps) {
   };
 }
 
-export default async function ProviderDetailsPage({ params }: ProviderDetailsPageProps) {
+// Page component
+export default async function ProviderDetailsPage(
+  { params }: { params: { id: string } }
+) {
   const provider = await getProvider(params.id);
 
   if (!provider) {
@@ -40,7 +43,7 @@ export default async function ProviderDetailsPage({ params }: ProviderDetailsPag
   );
 }
 
-// Optional: Generate static paths if using SSG for these pages
+// Generate static paths (for SSG)
 export async function generateStaticParams() {
   return mockProviders.map((provider) => ({
     id: provider.id,
